@@ -36,6 +36,7 @@ int countPairs2(int *arr, int len, int value) {
     } else {
       --right;
     }
+  }
   return cnt;
 }
 int countPairs3(int *arr, int len, int value) {
