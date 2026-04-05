@@ -9,7 +9,6 @@ int countPairs1(int *arr, int len, int value) {
         continue;
       if (arr[i] + arr[j] == value) {
         ++cnt;
-        break;
       }
     }
   }
