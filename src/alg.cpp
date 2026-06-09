@@ -11,20 +11,23 @@ int countPairs1(int *arr, int len, int value) {
 }
 
 int countPairs2(int *arr, int len, int value) {
-    int cnt = 0, l = 0, r = len - 1;
+    int cnt = 0;
+    int l = 0;
+    int r = len - 1;
     while (l < r) {
         int sum = arr[l] + arr[r];
         if (sum == value) {
             if (arr[l] == arr[r]) {
-                int n = r - l + 1;
-                cnt += n * (n - 1) / 2;
+                int k = r - l + 1;
+                cnt += k * (k - 1) / 2;
                 break;
             } else {
-                int l_cnt = 1, r_cnt = 1;
+                int l_cnt = 1;
                 while (l + 1 < r && arr[l] == arr[l + 1]) {
                     l_cnt++;
                     l++;
                 }
+                int r_cnt = 1;
                 while (r - 1 > l && arr[r] == arr[r - 1]) {
                     r_cnt++;
                     r--;
@@ -45,38 +48,47 @@ int countPairs2(int *arr, int len, int value) {
 int countPairs3(int *arr, int len, int value) {
     int cnt = 0;
     for (int i = 0; i < len; ++i) {
+        if (i > 0 && arr[i] == arr[i - 1]) {
+            continue;
+        }
         int target = value - arr[i];
-        int l = i + 1, r = len - 1;
-        int first = -1, last = -1;
-        while (l <= r) {
-            int mid = l + (r - l) / 2;
+        int left = i + 1;
+        int right = len - 1;
+        int first_pos = -1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
             if (arr[mid] == target) {
-                first = mid;
-                r = mid - 1;
+                first_pos = mid;
+                right = mid - 1;
             } else if (arr[mid] < target) {
-                l = mid + 1;
+                left = mid + 1;
             } else {
-                r = mid - 1;
+                right = mid - 1;
             }
         }
-        if (first != -1) {
-            l = first;
-            r = len - 1;
-            while (l <= r) {
-                int mid = l + (r - l) / 2;
+        if (first_pos != -1) {
+            left = first_pos;
+            right = len - 1;
+            int last_pos = first_pos;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
                 if (arr[mid] == target) {
-                    last = mid;
-                    l = mid + 1;
+                    last_pos = mid;
+                    left = mid + 1;
                 } else if (arr[mid] < target) {
-                    l = mid + 1;
+                    left = mid + 1;
                 } else {
-                    r = mid - 1;
+                    right = mid - 1;
                 }
             }
-            cnt += (last - first + 1);
+            if (arr[i] == target) {
+                int k = last_pos - first_pos + 1;
+                cnt += k * (k - 1) / 2;
+                i = last_pos;
+            } else {
+                cnt += (last_pos - first_pos + 1);
+            }
         }
-        while (i + 1 < len && arr[i] == arr[i + 1])
-            i++;
     }
     return cnt;
 }
