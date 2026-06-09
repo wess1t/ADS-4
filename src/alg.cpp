@@ -13,21 +13,6 @@ int countPairs1(int *arr, int len, int value) {
 
 int countPairs2(int *arr, int len, int value) {
     int cnt = 0;
-    for (int i = 0; i < len; ++i) {
-        if (i > 0 && arr[i] == arr[i - 1]) continue;
-        for (int j = len - 1; j > i; --j) {
-            if (j < len - 1 && arr[j] == arr[j + 1]) continue;
-            if (arr[i] + arr[j] == value) {
-                cnt++;
-                break;
-            }
-        }
-    }
-    return cnt;
-}
-
-int countPairs3(int *arr, int len, int value) {
-    int cnt = 0;
     int l = 0;
     int r = len - 1;
     while (l < r) {
@@ -38,23 +23,53 @@ int countPairs3(int *arr, int len, int value) {
                 cnt += n * (n - 1) / 2;
                 break;
             }
-            int l_val = arr[l];
-            int r_val = arr[r];
-            int l_cnt = 0;
-            while (l < r && arr[l] == l_val) {
+            int l_cnt = 1;
+            while (l + l_cnt < r && arr[l + l_cnt] == arr[l]) {
                 l_cnt++;
-                l++;
             }
-            int r_cnt = 0;
-            while (l <= r && arr[r] == r_val) {
+            int r_cnt = 1;
+            while (r - r_cnt > l && arr[r - r_cnt] == arr[r]) {
                 r_cnt++;
-                r--;
             }
             cnt += l_cnt * r_cnt;
+            l += l_cnt;
+            r -= r_cnt;
         } else if (sum < value) {
             l++;
         } else {
             r--;
+        }
+    }
+    return cnt;
+}
+
+int countPairs3(int *arr, int len, int value) {
+    int cnt = 0;
+    for (int i = 0; i < len; ++i) {
+        int target = value - arr[i];
+        int left = i + 1;
+        int right = len - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (arr[mid] == target) {
+                int r_cnt = 1;
+                int temp = mid + 1;
+                while (temp <= right && arr[temp] == target) {
+                    r_cnt++;
+                    temp++;
+                }
+                temp = mid - 1;
+                while (temp >= left && arr[temp] == target) {
+                    r_cnt++;
+                    temp--;
+                }
+                cnt += r_cnt;
+                break;
+            } else if (arr[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
         }
     }
     return cnt;
